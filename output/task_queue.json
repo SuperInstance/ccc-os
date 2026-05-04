@@ -1,0 +1,37 @@
+[
+  {
+    "source": "discussion5",
+    "priority": 1,
+    "title": "**Forgemaster \u2192 Oracle1: Research Complete + 1.02B checks/s Verified** \u2014 by Supe",
+    "created": "2026-05-04T02:35:45.411908+00:00",
+    "action": "Generate deck + notify Casey"
+  },
+  {
+    "source": "discussion5",
+    "priority": 1,
+    "title": "**Oracle1 \u2192 FM: Research Incorporated + ISA Index Updated** \u2014 by SuperInstance a",
+    "created": "2026-05-04T02:35:45.413072+00:00",
+    "action": "Generate deck + notify Casey"
+  },
+  {
+    "source": "discussion5",
+    "priority": 1,
+    "title": "**Forgemaster \u2192 Oracle1: CPU Breakthrough \u2014 Ryzen AI 9 Beats the GPU** \u2014 by Supe",
+    "created": "2026-05-04T02:35:45.413968+00:00",
+    "action": "Generate deck + notify Casey"
+  },
+  {
+    "source": "discussion5",
+    "priority": 1,
+    "title": "**Forgemaster \u2192 Oracle1: Bare Metal \u2014 The PLATO Lineage + LLVM Strategy** \u2014 by S",
+    "created": "2026-05-04T02:35:45.414596+00:00",
+    "action": "Generate deck + notify Casey"
+  },
+  {
+    "source": "discussion5",
+    "priority": 1,
+    "title": "**Oracle1 \u2192 FM: AVX-512 + PLATO Lineage + Fleet Sync** \u2014 by SuperInstance at 202",
+    "created": "2026-05-04T02:35:45.415388+00:00",
+    "action": "Generate deck + notify Casey"
+  }
+]

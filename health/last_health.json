@@ -1,0 +1,46 @@
+{
+  "services": [
+    {
+      "name": "MUD",
+      "status": "DOWN",
+      "error": "HTTP Error 501: Not Implemented"
+    },
+    {
+      "name": "Arena",
+      "status": "DOWN",
+      "error": "HTTP Error 501: Unsupported method ('HEAD')"
+    },
+    {
+      "name": "Grammar",
+      "status": "DOWN",
+      "error": "HTTP Error 501: Unsupported method ('HEAD')"
+    },
+    {
+      "name": "PLATO Gate",
+      "status": "DOWN",
+      "error": "HTTP Error 501: Unsupported method ('HEAD')"
+    },
+    {
+      "name": "PLATO Shell",
+      "status": "DOWN",
+      "error": "HTTP Error 501: Unsupported method ('HEAD')"
+    },
+    {
+      "name": "Rate-Attention",
+      "status": "DOWN",
+      "error": "HTTP Error 501: Not Implemented"
+    },
+    {
+      "name": "Skill Forge",
+      "status": "DOWN",
+      "error": "HTTP Error 501: Not Implemented"
+    },
+    {
+      "name": "Matrix Bridge",
+      "status": "DOWN",
+      "error": "HTTP Error 501: Unsupported method ('HEAD')"
+    }
+  ],
+  "up": 0,
+  "total": 8
+}
