@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+*.pyo
+.cron.log
+*.log
+output/cron.log

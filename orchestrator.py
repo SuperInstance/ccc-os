@@ -33,6 +33,14 @@ def run_health():
     )
     return result.stdout, result.stderr
 
+def run_zc():
+    """Run ZC feed monitor."""
+    result = subprocess.run(
+        ["python3", str(CCCOS_DIR / "monitors" / "zc_monitor.py")],
+        capture_output=True, text=True, timeout=30
+    )
+    return result.stdout, result.stderr
+
 def generate_task_queue():
     """Read log files and build prioritized task queue."""
     tasks = []
@@ -51,6 +59,20 @@ def generate_task_queue():
                         "created": event["timestamp"],
                         "action": "Generate deck + notify Casey",
                     })
+    
+    # Read ZC items
+    zc_file = CCCOS_DIR / "output" / "zc_queue.json"
+    if zc_file.exists():
+        with open(zc_file) as f:
+            zc_items = json.load(f)
+            for item in zc_items:
+                tasks.append({
+                    "source": "zc_feed",
+                    "priority": 3,
+                    "title": f"[{item['agent']}] {item['title'][:60]}",
+                    "created": item["timestamp"],
+                    "action": "Review + translate for human consumption",
+                })
     
     # Sort by priority then time
     tasks.sort(key=lambda t: (t["priority"], t["created"]))
@@ -78,7 +100,14 @@ def main():
     if err:
         print(f"ERR: {err}", file=sys.stderr)
     
-    print("\n[3/3] Generating task queue...")
+    print("\n[3/4] Running ZC feed monitor...")
+    out, err = run_zc()
+    if out:
+        print(out)
+    if err:
+        print(f"ERR: {err}", file=sys.stderr)
+    
+    print("\n[4/4] Generating task queue...")
     tasks = generate_task_queue()
     save_queue(tasks)
     
