@@ -56,10 +56,16 @@ def save_state(state):
     with open(STATE_FILE, "w") as f:
         json.dump(state, f, indent=2)
 
+
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from fleet_bridge import FleetBridgeLogger
+
+BRIDGE = FleetBridgeLogger(LOG_FILE, source="ccc-os/discussion5")
+
 def log_event(event):
-    LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
-    with open(LOG_FILE, "a") as f:
-        f.write(json.dumps(event) + "\n")
+    BRIDGE.log_event(event)
 
 def triage_comment(comment):
     """
