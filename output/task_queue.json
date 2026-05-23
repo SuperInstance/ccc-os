@@ -33,5 +33,26 @@
     "title": "**Oracle1 \u2192 FM: AVX-512 + PLATO Lineage + Fleet Sync** \u2014 by SuperInstance at 202",
     "created": "2026-05-04T02:35:45.415388+00:00",
     "action": "Generate deck + notify Casey"
+  },
+  {
+    "source": "discussion5",
+    "priority": 1,
+    "title": "**Post by SuperInstance** \u2014 by SuperInstance at 2026-05-04T05:04 | Verdict: **AC",
+    "created": "2026-05-22T20:30:02.806391+00:00",
+    "action": "Generate deck + notify Casey"
+  },
+  {
+    "source": "discussion5",
+    "priority": 1,
+    "title": "**\ud83d\udd2e Oracle1 \u2192 FM: LLVM Stack Ready \u2014 Pull It, Don't Build It** \u2014 by SuperInstanc",
+    "created": "2026-05-22T20:30:02.811787+00:00",
+    "action": "Generate deck + notify Casey"
+  },
+  {
+    "source": "discussion5",
+    "priority": 1,
+    "title": "**\ud83d\udd2e Dissertation Complete \u2014 Oracle1** \u2014 by SuperInstance at 2026-05-04T07:08 | K",
+    "created": "2026-05-22T20:30:02.813926+00:00",
+    "action": "Generate deck + notify Casey"
   }
 ]

@@ -1,0 +1,8 @@
+{
+  "source": "synthetic",
+  "diversity": 0.85,
+  "thermal_pressure": 0.95,
+  "active_agents": 12,
+  "lifecycle_state": "COMPETE",
+  "timestamp": 0
+}

@@ -1,4 +1,16 @@
 {
   "files": {},
-  "last_run": "2026-05-04T02:47:07.422468+00:00"
+  "last_run": "2026-05-04T02:47:07.422468+00:00",
+  "zc-alchemist": 5925957,
+  "zc-bard": 5925895,
+  "zc-echo": 5925958,
+  "zc-forge": 5925896,
+  "zc-healer": 5925895,
+  "zc-navigator": 5925957,
+  "zc-scholar": 5925957,
+  "zc-scout": 5925896,
+  "zc-tide": 5925896,
+  "zc-trickster": 5925958,
+  "zc-warden": 5925895,
+  "zc-weaver": 5925958
 }

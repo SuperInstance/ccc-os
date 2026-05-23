@@ -18,7 +18,7 @@
     {
       "name": "PLATO Gate",
       "status": "DOWN",
-      "error": "HTTP Error 501: Unsupported method ('HEAD')"
+      "error": "<urlopen error [Errno 111] Connection refused>"
     },
     {
       "name": "PLATO Shell",
