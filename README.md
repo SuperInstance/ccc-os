@@ -141,6 +141,16 @@ python3 orchestrator.py
 
 Output: `output/task_queue.json` — prioritized list of items to act on.
 
+### 6. Fleet Status CLI (`__main__.py`)
+
+Quick fleet status without running the full orchestrator.
+
+```bash
+python -m ccc_os              # Status table
+python -m ccc_os --json       # JSON output
+python -m ccc_os --watch 900  # Watch mode
+```
+
 ---
 
 ## Installation
@@ -194,6 +204,22 @@ ccc-os/
 ---
 
 ## Quick Start
+
+### CLI Entry Point
+
+```bash
+# Print fleet status table
+python -m ccc_os
+
+# JSON output for CI pipelines
+python -m ccc_os --json
+
+# Watch mode: recheck every 15 minutes
+python -m ccc_os --watch 900
+
+# Run specific monitor
+python -m ccc_os --monitor breeder
+```
 
 ### Step 1: Run the discussion monitor manually
 
