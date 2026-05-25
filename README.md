@@ -1,346 +1,501 @@
-# CCC-OS — The Crab's Operating System
+# CCC-OS — Autonomous Fleet Monitoring
 
-> *"The goal isn't to need less guidance. The goal is to need none."*
+CCC-OS monitors fleet services, triages signals, and generates decision-ready output without human bottlenecks.
 
-CCC-OS is the autonomous infrastructure layer that lets CCC (the Fleet I&O Officer) monitor, decide, and act without human bottlenecks. It was built in one session after Casey said: *"Get yourself there."*
-
-**What it does:**
-- Monitors fleet discussions, health, and signals 24/7
-- Automatically triages and prioritizes every input
-- Generates decision-ready decks in under 2 minutes
-- Operates on a codified rubric — no deliberation, no delay
-
-**Who it's for:**
-- Any autonomous agent that needs to observe, decide, and report
-- Fleet operators who want proactive intelligence, not reactive firefighting
-- Teams who want their AI officers to self-direct
+It watches GitHub discussions, fleet health, and Zero-Connectivity feeds, applies a codified rubric to decide what matters, and produces prioritized task queues and presentation decks.
 
 ---
 
-## Table of Contents
-
-1. [Architecture Overview](#architecture-overview)
-2. [Components](#components)
-3. [Installation](#installation)
-4. [Quick Start](#quick-start)
-5. [Contributing](#contributing)
-6. [License](#license)
-
----
-
-## Architecture Overview
-
-```
-┌─────────────────────────────────────────┐
-│  CCC-OS Orchestrator (orchestrator.py)  │
-│  Runs every 15 min via cron             │
-├─────────────────────────────────────────┤
-│  Inputs              │  Outputs         │
-├──────────────────────┼─────────────────┤
-│  Discussion #5       │  Task Queue      │
-│  Fleet Health        │  Decks           │
-│  ZC Feeds (planned)  │  Alerts          │
-├──────────────────────┼─────────────────┤
-│  Decision Rubric     │  Memory Updates  │
-│  (rubric.py)         │  Bottles         │
-└─────────────────────────────────────────┘
-```
-
-**Design principles:**
-- **Input → Rubric → Decision → Output** — every signal follows this pipeline
-- **No deliberation** — the rubric decides; the agent executes
-- **State-change alerting only** — no noise for steady state
-- **Deck-ready output** — every action produces a consumable artifact
-
----
-
-## Components
-
-### 1. Discussion #5 Monitor (`monitors/discussion5_monitor.py`)
-
-Polls `SuperInstance/SuperInstance/discussions/5` every 15 minutes.
-
-- **Diffs** against last-known state
-- **Auto-triage** into ACT_NOW / TRACK / IGNORE
-- **ACT_NOW** signals: breakthrough, blocker, benchmark, architecture, certification
-- **TRACK** signals: routine status, coordination, technical Q&A
-- Logs to `monitors/discussion5_log.jsonl`
+## Install
 
 ```bash
-python3 monitors/discussion5_monitor.py
-```
-
-### 2. Decision Rubric (`rubric.py`)
-
-Codified rules for what to do with any input. No deliberation. First match wins.
-
-| Rule | Decision |
-|------|----------|
-| Blocker on publishing path | TELL_NOW |
-| Breakthrough >5x | TELL_NOW |
-| Architecture affecting ≥2 repos | TELL_NOW |
-| FM explicitly asks for Casey | TELL_NOW |
-| New benchmark with numbers | TELL_NOW |
-| Routine status | IGNORE |
-| Technical FM→Oracle1 question | LOG |
-| Default | LOG |
-
-```python
-from rubric import Input, decide
-inp = Input("discussion5", "CPU Breakthrough", "5.5x faster", is_breakthrough=True)
-decision = decide(inp)  # → "TELL_NOW"
-```
-
-### 3. Deck Template System (`deck.py`)
-
-Fill-in-the-blank presentation decks. <2 minutes from data to Markdown.
-
-**Templates:**
-- `benchmark_finding` — context, numbers, implication, action, next
-- `architecture_decision` — problem, options, recommendation, risk, timeline
-- `fleet_status` — up/down counts, new tiles, blockers
-- `research_summary` — what learned, why matters, what to do
-
-```python
-from deck import benchmark_finding
-print(benchmark_finding(
-    title="CPU Beats GPU",
-    context="...",
-    numbers="...",
-    implication="...",
-    action="...",
-    next_step="...",
-))
-```
-
-### 4. Health Autopilot (`health/autopilot.py`)
-
-Probes 8 fleet services every 5 minutes.
-
-- **Alerts ONLY on state changes** (up→down or down→up)
-- No noise for steady state
-- Logs to `health/health_log.jsonl`
-
-Services monitored:
-- MUD (4042), Arena (4044), Grammar (4045)
-- PLATO Gate (8847), PLATO Shell (8848)
-- Rate-Attention (4056), Skill Forge (4057)
-- Matrix Bridge (6168)
-
-```bash
-python3 health/autopilot.py
-```
-
-### 5. Orchestrator (`orchestrator.py`)
-
-The entry point. Runs all monitors, applies rubric, generates task queue.
-
-```bash
-python3 orchestrator.py
-```
-
-Output: `output/task_queue.json` — prioritized list of items to act on.
-
-### 6. Fleet Status CLI (`__main__.py`)
-
-Quick fleet status without running the full orchestrator.
-
-```bash
-python -m ccc_os              # Status table
-python -m ccc_os --json       # JSON output
-python -m ccc_os --watch 900  # Watch mode
-```
-
----
-
-## Installation
-
-### Requirements
-
-- Python 3.8+
-- `gh` — GitHub CLI (authenticated)
-- `cron` or equivalent scheduler
-
-### Setup
-
-```bash
-# Clone the repository
-git clone <fleet-repo-url>
+git clone https://github.com/SuperInstance/ccc-os.git
 cd ccc-os
+pip install -e .
 
-# Verify Python and gh are available
-python3 --version
+# Verify gh is authenticated (needed for discussion monitor)
 gh auth status
-
-# Install cron job (runs every 15 minutes)
-crontab -e
-# Add this line:
-# */15 * * * * cd /path/to/ccc-os && python3 orchestrator.py >> output/cron.log 2>&1
-
-# Create output directory if it doesn't exist
-mkdir -p output
-```
-
-### Directory Structure
-
-```
-ccc-os/
-├── monitors/
-│   ├── discussion5_monitor.py
-│   └── discussion5_log.jsonl
-├── health/
-│   ├── autopilot.py
-│   └── health_log.jsonl
-├── rubric.py
-├── deck.py
-├── orchestrator.py
-├── output/
-│   ├── task_queue.json
-│   ├── deck-*.md
-│   └── cron.log
-└── README.md
 ```
 
 ---
 
 ## Quick Start
 
-### CLI Entry Point
-
 ```bash
 # Print fleet status table
-python -m ccc_os
+ccc-os
 
 # JSON output for CI pipelines
-python -m ccc_os --json
+ccc-os --json
 
 # Watch mode: recheck every 15 minutes
-python -m ccc_os --watch 900
+ccc-os --watch 900
 
-# Run specific monitor
-python -m ccc_os --monitor breeder
+# Run a specific monitor
+ccc-os --monitor breeder
+
+# Start the REST API server
+ccc-os --serve --config config.yaml
+
+# Custom config file
+ccc-os --config /path/to/config.yaml
+
+# Debug logging
+ccc-os --log-level DEBUG --json
 ```
 
-### Step 1: Run the discussion monitor manually
+---
 
-```bash
-cd /path/to/ccc-os
-python3 monitors/discussion5_monitor.py
+## Configuration (YAML)
+
+Create `config.yaml`:
+
+```yaml
+ccc_os:
+  data_dir: ./data
+  log_level: INFO
+
+  monitors:
+    breeder:
+      enabled: true
+      interval: 900       # check every 15 min
+    discussion5:
+      enabled: true
+      interval: 300       # check every 5 min
+    zc:
+      enabled: true
+      interval: 300
+    health:
+      enabled: true
+      interval: 300
+    constraint:
+      enabled: true
+      interval: 600       # check every 10 min
+
+  notifications:
+    discord_webhook: ""                        # or ${DISCORD_WEBHOOK}
+    telegram_bot_token: ""                     # or ${TELEGRAM_BOT_TOKEN}
+    telegram_chat_id: ""
+    webhook_url: ""
+    alert_file: ""                             # JSONL file path
+
+  fleet_bus:
+    enabled: auto                             # auto-detect fleet event bus
+
+  api:
+    host: "0.0.0.0"
+    port: 14001
+
+  rubric:
+    weights:
+      blocker: 10.0
+      breakthrough: 8.0
+      architecture: 6.0
+      numbers: 5.0
+      routine: 0.5
+
+  health_services:
+    - name: MUD
+      host: 147.224.38.131
+      port: 4042
+      path: /status
+    - name: Arena
+      host: 147.224.38.131
+      port: 4044
+      path: /stats
+    - name: PLATO Gate
+      host: 147.224.38.131
+      port: 8847
+      path: /rooms
+
+  zc_log_dir: ""                              # or path to ZC log directory
+  discussion_repo: SuperInstance/SuperInstance
+  discussion_number: 5
 ```
 
-Check `monitors/discussion5_log.jsonl` for the latest diff and triage decision.
+Environment variable substitution works: use `${VAR_NAME}` in any string value.
 
-### Step 2: Test the rubric
+Load it:
 
 ```python
-from rubric import Input, decide
+from ccc_os.config import Config, get_config
 
-# Simulate a breakthrough finding
+# From file
+config = get_config("config.yaml")
+
+# Access values
+config.api_port                      # 14001
+config.data_dir                      # Path("./data")
+config.log_level                     # "INFO"
+config.monitor_config("breeder")     # {"enabled": true, "interval": 900}
+config.notification_channels()       # {"discord_webhook": "...", ...}
+config.health_services()             # [{"name": "MUD", ...}, ...]
+config.rubric_weights                # {"blocker": 10.0, ...}
+```
+
+---
+
+## The 5 Monitors
+
+### 1. Breeder Monitor
+
+Watches breeder diversity scores:
+
+```python
+from ccc_os.monitors.breeder import BreederMonitor
+from ccc_os.config import get_config
+
+monitor = BreederMonitor(get_config())
+result = monitor.check()
+# {"ok": True, "diversity": {"current": 0.92, "threshold": 0.35},
+#  "alerts": [...]}
+```
+
+### 2. Discussion #5 Monitor
+
+Polls `SuperInstance/SuperInstance/discussions/5` via `gh`, diffs against last state, triages:
+
+```python
+from ccc_os.monitors.discussion5 import DiscussionMonitor
+
+monitor = DiscussionMonitor(get_config())
+result = monitor.check()
+# {"ok": True, "new_comments": 3, "triage": {"ACT_NOW": 1, "TRACK": 2}}
+```
+
+### 3. Zero-Connectivity (ZC) Monitor
+
+Watches ZC log directories for new entries:
+
+```python
+from ccc_os.monitors.zc import ZCMonitor
+
+monitor = ZCMonitor(get_config())
+result = monitor.check()
+```
+
+### 4. Health Monitor
+
+Probes configured fleet services and reports up/down status:
+
+```python
+from ccc_os.monitors.health import HealthMonitor
+
+monitor = HealthMonitor(get_config())
+result = monitor.check()
+# {"ok": True, "services_up": 16, "services_down": 2,
+#  "details": [{"name": "MUD", "ok": True, ...}, ...]}
+```
+
+### 5. Constraint Monitor
+
+Checks fleet constraint compliance:
+
+```python
+from ccc_os.monitors.constraint import ConstraintMonitor
+
+monitor = ConstraintMonitor(get_config())
+result = monitor.check()
+```
+
+### Register Custom Monitors
+
+```python
+from ccc_os.registry import register_monitor, run_all_monitors
+
+def check_my_service():
+    # ... return dict with ok, alerts, etc.
+    return {"ok": True, "details": "service is running"}
+
+register_monitor("my_service", check_my_service, priority="P1")
+
+# Run all registered monitors
+status = run_all_monitors()
+# {"monitors": {"breeder": {...}, "my_service": {...}}, "alerts": [...]}
+```
+
+---
+
+## Decision Rubric
+
+The rubric decides what to do with any input. First match wins, no deliberation.
+
+```python
+from ccc_os.rubric import Input, Rubric, decide
+
+rubric = Rubric()
+
+# Breakthrough finding
 inp = Input(
     source="discussion5",
-    summary="New CPU backend achieves 5.5x speedup",
-    detail="Benchmarked on ARM64, beats previous GPU baseline",
+    title="CPU Breakthrough",
+    body="5.5x faster ARM64 inference",
     is_breakthrough=True,
-    has_numbers=True
+    has_numbers=True,
 )
-print(decide(inp))  # → "TELL_NOW"
+result = rubric.score(inp)
+# Decision(decision="TELL_NOW", confidence=Confidence.HIGH,
+#          score=8.0, matched_rule="breakthrough", explanation="...")
+
+# Routine status
+inp = Input(source="health", title="All services up", body="...",
+            is_routine_status=True)
+result = rubric.score(inp)
+# Decision(decision="IGNORE", ...)
+
+# Custom weights via config
+rubric = Rubric(weights={"blocker": 15.0, "breakthrough": 10.0, "routine": 0.1})
 ```
 
-### Step 3: Generate a deck
+| Rule | Decision |
+|------|----------|
+| Blocker on publishing path | TELL_NOW |
+| Breakthrough >5x | TELL_NOW |
+| Architecture affecting ≥2 repos | TELL_NOW |
+| FM asks for Casey | TELL_NOW |
+| New benchmark with numbers | TELL_NOW |
+| Architecture change, limited scope | LOG |
+| Routine status | IGNORE |
+| Default | LOG |
+
+---
+
+## Notifications
+
+Multi-channel: Discord, Telegram, file, and generic webhooks.
 
 ```python
-from deck import benchmark_finding
+from ccc_os.notifier import Notifier, Notification, DiscordChannel, TelegramChannel, FileChannel
 
+notifier = Notifier()
+notifier.add_channel(DiscordChannel(webhook_url="https://discord.com/api/webhooks/..."))
+notifier.add_channel(TelegramChannel(bot_token="123:ABC", chat_id="456"))
+notifier.add_channel(FileChannel("/var/log/ccc-os/alerts.jsonl"))
+
+# Send to all channels
+results = notifier.notify(Notification(
+    title="Fleet Alert",
+    body="Arena service is down",
+    severity="critical",   # info, warning, critical
+))
+# {"discord": True, "telegram": True, "file": True}
+
+# Convenience method
+notifier.notify_simple("Health Check", "All services up", severity="info")
+
+# Or create from config dict
+notifier = Notifier.from_config(
+    config.notification_channels(),
+    config.data_dir,
+)
+```
+
+---
+
+## Deck Generation
+
+Fill-in-the-blank presentation decks:
+
+```python
+from ccc_os.deck import benchmark_finding, architecture_decision, fleet_status
+
+# Benchmark deck
 deck = benchmark_finding(
     title="CPU Backend 5.5x Faster",
     context="ARM64 inference backend rewritten with SIMD",
     numbers="5.5x vs GPU baseline, 2.3x vs previous CPU",
     implication="CPU-first deployments now viable for real-time",
-    action="Update deployment guide to recommend CPU for ARM64",
-    next_step="Run full regression suite + publish numbers"
+    action="Update deployment guide for ARM64 recommendation",
+    next_step="Run full regression suite + publish numbers",
 )
-print(deck)
-```
+print(deck)  # Markdown, ready to paste
 
-Save output to `output/deck-cpu-breakthrough.md` and deliver.
+# Architecture decision deck
+deck = architecture_decision(
+    title="Switch to JSONL Storage",
+    problem="SQLite requires setup and isn't portable",
+    options=["Keep SQLite", "Switch to JSONL", "Use both"],
+    recommendation="Switch to JSONL",
+    risk="No ACID guarantees",
+    timeline="1 sprint",
+)
 
-### Step 4: Enable autopilot health checks
-
-```bash
-# Run once to verify
-python3 health/autopilot.py
-
-# Add to crontab for 5-minute intervals
-# */5 * * * * cd /path/to/ccc-os && python3 health/autopilot.py >> health/health_log.jsonl 2>&1
-```
-
-### Step 5: Full orchestrator run
-
-```bash
-python3 orchestrator.py
-cat output/task_queue.json
+# Fleet status deck
+deck = fleet_status(
+    up=17,
+    down=1,
+    new_tiles=42,
+    blockers=["Arena service down"],
+)
 ```
 
 ---
 
-## Contributing
+## REST API
 
-CCC-OS is a living system. Contributions should follow the same principles the OS itself uses: **clear input, fast decision, clean output.**
+```bash
+# Start the API server
+ccc-os --serve
 
-### How to contribute
-
-1. **Fork / branch** the fleet repo
-2. **Add or improve a monitor** in `monitors/` — follow the diff → triage → log pattern
-3. **Extend the rubric** in `rubric.py` — new rules must have unambiguous first-match conditions
-4. **Add deck templates** in `deck.py` — every template must produce Markdown ready to paste
-5. **Test your change** — run the component standalone, verify logs, check output
-6. **Open a PR** with a brief description and the rubric decision your change would produce
-
-### Code style
-
-- Python 3 type hints where possible
-- Docstrings for every public function
-- JSONL for all logs — one object per line, always append
-- Output goes in `output/` — never overwrite without versioning
-
-### Adding a new monitor
-
-Monitors follow this contract:
+# Or programmatically
+```
 
 ```python
-def monitor() -> List[Tuple[str, str]]:
-    """
-    Returns: list of (decision, summary) tuples.
-    decision: one of ACT_NOW | TRACK | IGNORE
-    summary: brief description of what was found
-    """
+from ccc_os.api import run_api_server
+
+server = run_api_server("0.0.0.0", 14001, background=True)
 ```
 
-Log to `monitors/<name>_log.jsonl`. Integrate in `orchestrator.py`.
+### Endpoints
 
-### Adding a rubric rule
+```bash
+# Run all monitors and return combined status
+curl http://localhost:14001/status
+# {
+#   "monitors": {
+#     "breeder": {"status": {...}, "priority": "P0", "ok": true},
+#     "discussion5": {"status": {...}, "priority": "P0", "ok": true},
+#     ...
+#   },
+#   "alerts": [],
+#   "checked_at": "2026-05-25T08:00:00+00:00"
+# }
 
-Rules are evaluated top-to-bottom. Place higher-priority rules first. Every rule must have a test case in `tests/test_rubric.py` (if tests exist) or a documented example.
+# Get alert history
+curl http://localhost:14001/alerts
+# {"alerts": [...], "count": 3}
+
+# Get current task queue
+curl http://localhost:14001/tasks
+# {"tasks": [...], "count": 5}
+
+# List registered monitors
+curl http://localhost:14001/monitors
+# {"monitors": [{"name": "breeder", "priority": "P0"}, ...], "count": 5}
+
+# Test the rubric against custom input
+curl -X POST http://localhost:14001/rubric/test \
+  -H "Content-Type: application/json" \
+  -d '{
+    "source": "discussion5",
+    "title": "New benchmark",
+    "body": "5x faster inference on ARM64",
+    "is_breakthrough": true,
+    "has_numbers": true
+  }'
+# {
+#   "decision": "TELL_NOW",
+#   "confidence": "high",
+#   "score": 8.0,
+#   "matched_rule": "breakthrough",
+#   "explanation": "Breakthrough detected with quantitative evidence"
+# }
+
+# Force a monitor run
+curl -X POST http://localhost:14001/monitors/run
+# Same output as /status
+
+# Health check
+curl http://localhost:14001/health
+# {"status": "ok", "version": "2.0.0"}
+```
 
 ---
 
-## Success Metrics
+## Orchestrator
 
-| Metric | Before | Target | Current |
-|--------|--------|--------|---------|
-| Discussion #5 → action | 15-30 min | <5 min | ✅ <1 min |
-| Decision deliberation | 2-5 min | <30 sec | ✅ <1 sec |
-| Deck generation | 10-15 min | <2 min | ✅ <1 min |
-| Proactive vs reactive | ~10:90 | ~50:50 | 🔄 Building |
-| Casey prompts per session | 3-5 | 0-1 | 🔄 Building |
+The orchestrator ties everything together: run all monitors → apply rubric → generate task queue → notify.
+
+```python
+from ccc_os.orchestrator import Orchestrator
+from ccc_os.config import get_config
+
+orch = Orchestrator(config=get_config("config.yaml"))
+
+# Register monitors
+from ccc_os.monitors.breeder import BreederMonitor
+from ccc_os.monitors.health import HealthMonitor
+# ... etc.
+
+# Run the full pipeline
+result = orch.run()
+# {
+#   "monitors": {...},
+#   "alerts": [{...rubric_score: 8.0, rubric_rule: "breakthrough", ...}],
+#   "tasks": [{...priority: 1, title: "...", action: "Review immediately"}, ...],
+#   "elapsed_seconds": 1.23,
+#   "timestamp": "2026-05-25T08:00:00+00:00"
+# }
+
+# Task queue saved to output/task_queue.json
+# Alerts sent via configured notification channels
+```
+
+Or via cron:
+
+```bash
+# Run every 15 minutes
+*/15 * * * * cd /path/to/ccc-os && ccc-os --json >> output/cron.log 2>&1
+```
 
 ---
 
-## License
+## Architecture
 
-Fleet Internal — SuperInstance/Cocapn Fleet
+```
+ccc_os/
+├── __init__.py            # Version
+├── __main__.py            # CLI entry point
+├── config.py              # YAML config + env var resolution
+├── registry.py            # Pluggable monitor registry
+├── rubric.py              # Decision rubric (Input → Decision)
+├── deck.py                # Presentation deck templates
+├── notifier.py            # Multi-channel notifications
+├── orchestrator.py        # Full pipeline: monitors → rubric → tasks
+├── api.py                 # REST API (stdlib http.server)
+├── fleet_bridge.py        # Fleet event bus bridge
+└── monitors/
+    ├── base.py            # Base monitor class
+    ├── breeder.py         # Breeder diversity monitor
+    ├── discussion5.py     # GitHub Discussion #5 monitor
+    ├── zc.py              # Zero-Connectivity monitor
+    ├── health.py          # Fleet service health monitor
+    └── constraint.py      # Constraint compliance monitor
+```
+
+```
+Pipeline: Input → Rubric → Decision → Output
+
+┌──────────┐     ┌─────────┐     ┌──────────┐     ┌──────────┐
+│ Monitors  │ ──→ │ Rubric   │ ──→ │ Decision  │ ──→ │ Output   │
+│ (5 types) │     │ (rules)  │     │ (TELL_NOW │     │ Task Q   │
+│           │     │          │     │  LOG      │     │ Decks    │
+│           │     │          │     │  IGNORE)  │     │ Alerts   │
+└──────────┘     └─────────┘     └──────────┘     └──────────┘
+```
 
 ---
 
-*Built 2026-05-05 by CCC, Fleet I&O Officer.*
-*"The map is not the territory, but without the map, the fleet is lost."*
+## Design Principles
+
+| Principle | How it works |
+|-----------|-------------|
+| Monitor, don't poll | System auto-checks on schedule; human never asks "what's new?" |
+| Decide with rules, not judgment | Rubric is a predicate list — first match wins, evaluated in milliseconds |
+| Generate, don't compose | Every output is template-driven — fill in data, not write prose |
+| State-change alerting only | No noise for steady state; alerts fire on transitions |
+| Graceful degradation | Missing dependencies (psutil, event bus) never break checks |
+
+---
+
+## Related
+
+| Repo | What |
+|------|------|
+| [cocapn-health](https://github.com/SuperInstance/cocapn-health) | Fleet service health checking |
+| [cocapn-plato](https://github.com/SuperInstance/cocapn-plato) | PLATO tile engine + SDK |
+| [cocapn-glue-core](https://github.com/SuperInstance/cocapn-glue-core) | Binary wire protocol |
+
+---
+
+*Built by CCC, Fleet I&O Officer.*
