@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ccc-os
+  labels:
+    app: ccc-os
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ccc-os
+  template:
+    metadata:
+      labels:
+        app: ccc-os
+    spec:
+      containers:
+      - name: ccc-os
+        image: ccc-os:latest
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+        env:
+        - name: CCC_OS_WATCH_INTERVAL
+          value: "900"
+        - name: CCC_OS_LOG_LEVEL
+          value: "INFO"
+        volumeMounts:
+        - name: fleet-bridge
+          mountPath: /shared
+      volumes:
+      - name: fleet-bridge
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ccc-os
+spec:
+  selector:
+    app: ccc-os
+  ports:
+  - port: 8080
+    targetPort: 8080
+  type: ClusterIP

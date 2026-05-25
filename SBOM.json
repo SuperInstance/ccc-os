@@ -1,0 +1,23 @@
+{
+  "sbomVersion": "1.0",
+  "specVersion": "SPDX-2.3",
+  "name": "ccc-os",
+  "version": "1.0.0",
+  "supplier": "Cocapn Fleet",
+  "description": "Autonomous infrastructure layer for fleet monitoring and decision-making",
+  "components": [
+    {
+      "type": "application",
+      "name": "ccc-os",
+      "version": "1.0.0",
+      "supplier": "Cocapn Fleet",
+      "downloadLocation": "https://github.com/SuperInstance/ccc-os",
+      "licenseConcluded": "MIT",
+      "filesAnalyzed": true
+    }
+  ],
+  "dependencies": [],
+  "hashes": {
+    "sha256": "placeholder"
+  }
+}

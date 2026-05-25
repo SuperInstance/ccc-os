@@ -44,6 +44,48 @@ ccc-os --config /path/to/config.yaml
 ccc-os --log-level DEBUG --json
 ```
 
+### Metrics Endpoint (`/metrics`)
+
+CCC-OS exposes status as JSON for scraping. Pipe `--json` to your metrics collector:
+
+```bash
+ccc-os --json
+```
+
+For Prometheus, export via cron every 5 minutes:
+
+```bash
+*/5 * * * * cd /opt/ccc-os && ccc-os --json > /var/lib/prometheus/ccc-os.json
+```
+
+### Plugin API Quickstart
+
+```python
+from ccc_os.registry import register_monitor
+
+def check_my_agent():
+    return {"ok": True, "diversity": 0.75}
+
+register_monitor("my_agent", check_my_agent, priority="P1")
+```
+
+See `docs/PLUGIN_API.md` for the full API reference, `docs/SCALING.md` for the scaling guide and multi-node setup, and `RUNBOOK.md` for 3-AM troubleshooting.
+
+### Scale
+
+See `docs/SCALING.md` for how to scale CCC-OS across multiple nodes.
+
+### Deploy
+
+```bash
+# Docker
+docker build -t ccc-os .
+docker run ccc-os
+
+# Kubernetes
+kubectl apply -f k8s/ccc-os-deployment.yaml
+```
+
 ---
 
 ## Configuration (YAML)
@@ -437,6 +479,20 @@ Or via cron:
 # Run every 15 minutes
 */15 * * * * cd /path/to/ccc-os && ccc-os --json >> output/cron.log 2>&1
 ```
+
+---
+
+## Security
+
+### Signed Releases
+
+CCC-OS releases are tagged and signed. Each release commit is signed via GitHub's commit signing infrastructure. To verify:
+
+```bash
+git verify-commit <commit-hash>
+```
+
+See `SIGNING.md` for the full release signing policy and key management.
 
 ---
 

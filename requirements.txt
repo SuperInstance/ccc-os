@@ -1,0 +1,3 @@
+# CCC-OS dependencies
+# All core functionality uses Python stdlib (3.10+)
+# Optional: sunset-ecosystem for fleet bridge integration
