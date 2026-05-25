@@ -4,3 +4,7 @@ __pycache__/
 .cron.log
 *.log
 output/cron.log
+
+# Runtime state
+monitors/*_last_state.json
+output/breeder_alerts.jsonl
