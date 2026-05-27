@@ -1,4 +1,3 @@
-import json
 from ccc_os.registry import MonitorRegistry, register_monitor, run_all_monitors
 
 
@@ -7,13 +6,13 @@ class TestMonitorRegistry:
 
     def test_register_and_run(self):
         registry = MonitorRegistry()
-        
+
         def check_a():
             return {"ok": True, "alerts": []}
-        
+
         registry.register("test_a", check_a, priority="P0")
         assert registry.list_monitors() == ["test_a"]
-        
+
         result = registry.run_all()
         assert result["monitors"]["test_a"]["ok"] is True
         assert result["monitors"]["test_a"]["priority"] == "P0"
@@ -23,7 +22,7 @@ class TestMonitorRegistry:
         # Note: this mutates global state — fine for tests
         def check_b():
             return {"ok": False, "alerts": [{"action": "TELL_NOW", "reason": "fail"}]}
-        
+
         register_monitor("test_b", check_b, priority="P1")
         result = run_all_monitors()
         # Monitor ran without exception = ok=True, but alerts extracted
@@ -33,10 +32,10 @@ class TestMonitorRegistry:
 
     def test_failed_monitor(self):
         registry = MonitorRegistry()
-        
+
         def check_fail():
             raise RuntimeError("boom")
-        
+
         registry.register("fail", check_fail)
         result = registry.run_all()
         assert result["monitors"]["fail"]["ok"] is False
@@ -52,10 +51,10 @@ class TestMonitorRegistry:
 
     def test_checked_at_timestamp(self):
         registry = MonitorRegistry()
-        
+
         def check_ok():
             return {"ok": True}
-        
+
         registry.register("ok", check_ok)
         result = registry.run_all()
         assert "checked_at" in result
@@ -63,16 +62,16 @@ class TestMonitorRegistry:
 
     def test_multiple_monitors(self):
         registry = MonitorRegistry()
-        
+
         def check_1():
             return {"ok": True, "alerts": []}
-        
+
         def check_2():
             return {"ok": True, "alerts": []}
-        
+
         registry.register("one", check_1, "P0")
         registry.register("two", check_2, "P2")
-        
+
         result = registry.run_all()
         assert len(result["monitors"]) == 2
         assert result["monitors"]["one"]["priority"] == "P0"

@@ -6,7 +6,6 @@ New code should use ccc_os.monitors.health.HealthMonitor directly.
 
 from __future__ import annotations
 
-import json
 import logging
 import urllib.request
 from datetime import datetime, timezone

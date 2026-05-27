@@ -1,11 +1,16 @@
 """Tests for ccc_os.deck module."""
 
-import json
-from datetime import datetime, timezone
 
-import pytest
 
-from ccc_os.deck import Deck, Slide, benchmark_finding, architecture_decision, fleet_status, research_summary, constraint_alert
+from ccc_os.deck import (
+    Deck,
+    Slide,
+    architecture_decision,
+    benchmark_finding,
+    constraint_alert,
+    fleet_status,
+    research_summary,
+)
 
 
 class TestSlide:

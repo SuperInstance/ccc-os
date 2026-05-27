@@ -12,9 +12,8 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any
 
-from .constraint import Constraint, ConstraintSeverity
+from .constraint import ConstraintSeverity
 from .node import ComputeNode
 from .resource import ResourceManager
 from .scheduler import Task

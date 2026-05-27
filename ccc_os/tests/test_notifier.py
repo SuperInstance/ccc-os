@@ -3,13 +3,18 @@
 import json
 import tempfile
 from pathlib import Path
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
 import pytest
 
 from ccc_os.notifier import (
-    Notification, Channel, DiscordChannel, TelegramChannel,
-    FileChannel, WebhookChannel, Notifier,
+    Channel,
+    DiscordChannel,
+    FileChannel,
+    Notification,
+    Notifier,
+    TelegramChannel,
+    WebhookChannel,
 )
 
 

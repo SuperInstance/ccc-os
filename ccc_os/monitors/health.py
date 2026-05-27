@@ -9,8 +9,6 @@ import json
 import logging
 import urllib.request
 from datetime import datetime, timezone
-from pathlib import Path
-from typing import Any
 
 from ..config import Config, get_config
 from ..fleet_bridge import FleetBridgeLogger

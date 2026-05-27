@@ -1,7 +1,6 @@
 """Tests for ccc_os.resource module."""
 
-import pytest
-from ccc_os.node import ComputeNode, NodeStatus
+from ccc_os.node import ComputeNode
 from ccc_os.resource import FleetResources, ResourceManager
 
 

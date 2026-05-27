@@ -1,14 +1,15 @@
 """Tests for ccc_os.scheduler module."""
 
-import time
-import pytest
-from ccc_os.node import ComputeNode, NodeStatus
 from ccc_os.constraint import (
-    AffinityConstraint, BudgetConstraint, ConstraintSeverity,
-    DeadlineConstraint, DependencyConstraint, ResourceConstraint,
+    AffinityConstraint,
+    BudgetConstraint,
+    ConstraintSeverity,
+    DependencyConstraint,
+    ResourceConstraint,
 )
+from ccc_os.node import ComputeNode
 from ccc_os.resource import ResourceManager
-from ccc_os.scheduler import ConstraintScheduler, ScheduleResult, Task, TaskState
+from ccc_os.scheduler import ConstraintScheduler, Task, TaskState
 
 
 def _make_scheduler(n_nodes: int = 2, cpu: float = 16.0, mem: float = 64.0, gpu: int = 0) -> ConstraintScheduler:
@@ -112,6 +113,7 @@ class TestConstraintScheduler:
     def test_dependency_constraint(self):
         s = _make_scheduler(1)
         t1 = Task("t1", cpu=4, memory=8)
+        s.submit(t1)
         t2 = Task("t2", cpu=4, memory=8, constraints=[
             DependencyConstraint(depends_on=frozenset({"t1"})),
         ])

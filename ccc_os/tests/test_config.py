@@ -4,7 +4,6 @@ import os
 import tempfile
 from pathlib import Path
 
-import pytest
 import yaml
 
 from ccc_os.config import Config, get_config

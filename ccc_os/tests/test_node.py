@@ -1,7 +1,5 @@
 """Tests for ccc_os.node module."""
 
-import time
-import pytest
 from ccc_os.node import ComputeNode, NodeStatus
 
 

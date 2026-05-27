@@ -4,8 +4,6 @@ import json
 import tempfile
 from pathlib import Path
 
-import pytest
-
 from ccc_os.fleet_bridge import FleetBridgeLogger, is_bus_available
 
 

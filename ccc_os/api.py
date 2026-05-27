@@ -9,14 +9,14 @@ from __future__ import annotations
 import json
 import logging
 import threading
-from http.server import HTTPServer, BaseHTTPRequestHandler
+from http.server import BaseHTTPRequestHandler, HTTPServer
 from typing import Any
-from urllib.parse import urlparse, parse_qs
+from urllib.parse import urlparse
 
 from .config import get_config
+from .orchestrator import Orchestrator
 from .registry import get_registry
 from .rubric import Input, Rubric
-from .orchestrator import Orchestrator
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +44,7 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         parsed = urlparse(self.path)
         path = parsed.path.rstrip("/") or "/"
-        params = parse_qs(parsed.query)
+        # query params available via parse_qs(parsed.query) if needed
 
         if path == "/status":
             self._handle_status()

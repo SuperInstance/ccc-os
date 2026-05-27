@@ -9,12 +9,10 @@ from __future__ import annotations
 import json
 import logging
 from datetime import datetime, timezone
-from pathlib import Path
-from typing import Any
 
 from ..config import Config, get_config
-from ..rubric import Input, decide
 from ..fleet_bridge import FleetBridgeLogger
+from ..rubric import Input, decide
 from .base import BaseMonitor, MonitorResult
 
 logger = logging.getLogger(__name__)
@@ -22,9 +20,9 @@ logger = logging.getLogger(__name__)
 # Try importing constraint-toolkit
 _HAS_CONSTRAINT_TOOLKIT = False
 try:
-    import constraint_toolkit  # type: ignore
-    _HAS_CONSTRAINT_TOOLKIT = True
-except ImportError:
+    import importlib.util
+    _HAS_CONSTRAINT_TOOLKIT = importlib.util.find_spec("constraint_toolkit") is not None
+except Exception:
     pass
 
 

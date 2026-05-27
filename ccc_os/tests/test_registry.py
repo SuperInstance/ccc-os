@@ -1,7 +1,6 @@
 """Tests for ccc_os.registry module."""
 
-import pytest
-from ccc_os.registry import MonitorRegistry, register_monitor, run_all_monitors, get_registry
+from ccc_os.registry import MonitorRegistry, get_registry, register_monitor
 
 
 class TestMonitorRegistry:

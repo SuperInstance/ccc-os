@@ -3,16 +3,15 @@
 import json
 import tempfile
 from pathlib import Path
-from unittest.mock import patch, PropertyMock
+from unittest.mock import patch
 
-import pytest
 import yaml
 
 from ccc_os.config import Config
+from ccc_os.notifier import FileChannel, Notifier
 from ccc_os.orchestrator import Orchestrator
 from ccc_os.registry import MonitorRegistry
 from ccc_os.rubric import Rubric
-from ccc_os.notifier import Notifier, FileChannel
 
 
 def _make_config(tmp: str) -> Config:
@@ -139,7 +138,7 @@ class TestOrchestrator:
 
             registry.register("m", alert_monitor)
             orch = Orchestrator(config=config, registry=registry, notifier=notifier)
-            result = orch.run()
+            orch.run()
             assert (Path(tmp) / "nalerts.jsonl").exists()
 
     def test_elapsed_seconds_is_positive(self):

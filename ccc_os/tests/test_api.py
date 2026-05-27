@@ -3,11 +3,10 @@
 import json
 import threading
 import time
-from unittest.mock import patch
 
 import pytest
 
-from ccc_os.api import FleetAPIHandler, create_api_server
+from ccc_os.api import create_api_server
 
 
 class TestAPIEndpoints:
@@ -32,8 +31,8 @@ class TestAPIEndpoints:
             server.shutdown()
 
     def test_unknown_endpoint_404(self):
-        import urllib.request
         import urllib.error
+        import urllib.request
         server = self._start_server(14098)
         try:
             with pytest.raises(urllib.error.HTTPError) as exc_info:
@@ -110,8 +109,8 @@ class TestAPIEndpoints:
             server.shutdown()
 
     def test_rubric_test_empty_body(self):
-        import urllib.request
         import urllib.error
+        import urllib.request
         server = self._start_server(14092)
         try:
             req = urllib.request.Request(

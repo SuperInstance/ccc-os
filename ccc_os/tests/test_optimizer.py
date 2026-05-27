@@ -1,14 +1,13 @@
 """Tests for ccc_os.optimizer module."""
 
-import pytest
-from ccc_os.node import ComputeNode
-from ccc_os.resource import ResourceManager
-from ccc_os.optimizer import PlacementOptimizer, PlacementStrategy
-from ccc_os.scheduler import Task
 from ccc_os.constraint import (
-    AffinityConstraint, BudgetConstraint, ConstraintSeverity,
-    ResourceConstraint,
+    AffinityConstraint,
+    ConstraintSeverity,
 )
+from ccc_os.node import ComputeNode
+from ccc_os.optimizer import PlacementOptimizer, PlacementStrategy
+from ccc_os.resource import ResourceManager
+from ccc_os.scheduler import Task
 
 
 def _make_optimizer(n_nodes: int = 3) -> tuple[ResourceManager, PlacementOptimizer]:

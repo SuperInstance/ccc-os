@@ -47,6 +47,11 @@ addopts = "--import-mode=importlib"
 
 [tool.coverage.run]
 source = ["ccc_os"]
+omit = [
+    "*/tests/*",
+    "*/__pycache__/*",
+    "*/.pytest_cache/*",
+]
 
 [tool.coverage.report]
 exclude_lines = [
@@ -59,7 +64,7 @@ exclude_lines = [
 ]
 
 [tool.ruff]
-line-length = 100
+line-length = 120
 extend-exclude = [
     "monitors/",
     "health/",
@@ -73,7 +78,7 @@ extend-exclude = [
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "W"]
-ignore = ["E402"]
+ignore = ["E402", "E501"]
 
 [tool.mypy]
 python_version = "3.10"

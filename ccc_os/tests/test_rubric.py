@@ -1,7 +1,6 @@
 """Tests for ccc_os.rubric module."""
 
-import pytest
-from ccc_os.rubric import Input, Rubric, decide, explain, score, Confidence
+from ccc_os.rubric import Confidence, Input, Rubric, decide, explain
 
 
 class TestDecide:

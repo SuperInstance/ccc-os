@@ -1,18 +1,13 @@
 """Tests for ccc_os.monitors module."""
 
 import json
-import tempfile
-from pathlib import Path
-from unittest.mock import patch, MagicMock
-
-import pytest
 
 from ccc_os.config import Config
+from ccc_os.monitors.base import MonitorResult
 from ccc_os.monitors.breeder import BreederMonitor
+from ccc_os.monitors.constraint import ConstraintMonitor
 from ccc_os.monitors.health import HealthMonitor
 from ccc_os.monitors.zc import ZCMonitor
-from ccc_os.monitors.constraint import ConstraintMonitor
-from ccc_os.monitors.base import BaseMonitor, MonitorResult
 
 
 class TestBaseMonitor:

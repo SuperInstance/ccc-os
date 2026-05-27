@@ -12,8 +12,8 @@ from pathlib import Path
 from typing import Any
 
 from ..config import Config, get_config
-from ..rubric import Input, decide, explain
 from ..fleet_bridge import FleetBridgeLogger
+from ..rubric import Input, decide, explain
 from .base import BaseMonitor, MonitorResult
 
 logger = logging.getLogger(__name__)

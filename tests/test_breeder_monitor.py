@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Quick test: verify CCC breeder monitor fires alerts on critical values."""
 import sys
+
 sys.path.insert(0, "/root/.openclaw/workspace/ccc-os")
 from monitors.breeder_monitor import BreederMonitor
 

@@ -13,8 +13,9 @@ from enum import Enum
 from typing import Any
 
 from .constraint import (
-    AffinityConstraint, BudgetConstraint, Constraint, ConstraintSeverity,
-    ConstraintType, DeadlineConstraint, DependencyConstraint, ResourceConstraint,
+    Constraint,
+    ConstraintSeverity,
+    ConstraintType,
 )
 from .node import ComputeNode
 from .resource import ResourceManager

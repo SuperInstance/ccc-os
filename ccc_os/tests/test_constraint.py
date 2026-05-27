@@ -1,9 +1,14 @@
 """Tests for ccc_os.constraint module."""
 
-import pytest
 from ccc_os.constraint import (
-    AffinityConstraint, BudgetConstraint, Constraint, ConstraintSeverity,
-    ConstraintType, DeadlineConstraint, DependencyConstraint, ResourceConstraint,
+    AffinityConstraint,
+    BudgetConstraint,
+    Constraint,
+    ConstraintSeverity,
+    ConstraintType,
+    DeadlineConstraint,
+    DependencyConstraint,
+    ResourceConstraint,
 )
 
 
