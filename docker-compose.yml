@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  ccc-os:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ccc-os:latest
+    container_name: ccc-os
+    restart: unless-stopped
+    ports:
+      - "14001:14001"
+    environment:
+      - CCC_OS_LOG_LEVEL=INFO
+      - CCC_OS_DATA_DIR=/app/data
+    volumes:
+      - ./data:/app/data
+      - ./config.yaml:/app/config.yaml:ro
+    command: ["python", "-m", "ccc_os", "--serve", "--config", "/app/config.yaml"]
+    healthcheck:
+      test: ["CMD", "python", "-m", "ccc_os", "--json"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 30s

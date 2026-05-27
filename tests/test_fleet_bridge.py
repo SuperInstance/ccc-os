@@ -14,7 +14,7 @@ _WORKSPACE = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(_WORKSPACE / "ccc-os"))
 sys.path.insert(0, str(_WORKSPACE / "sunset-ecosystem"))
 
-import fleet_bridge
+import ccc_os.fleet_bridge as fleet_bridge
 
 
 class TestFleetBridgeLogger:

@@ -8,3 +8,11 @@ output/cron.log
 # Runtime state
 monitors/*_last_state.json
 output/breeder_alerts.jsonl
+.coverage
+*.egg-info/
+__pycache__/
+*.pyc
+.pytest_cache/
+dist/
+build/
+

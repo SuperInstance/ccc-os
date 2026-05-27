@@ -1,0 +1,2 @@
+[console_scripts]
+ccc-os = ccc_os.__main__:main

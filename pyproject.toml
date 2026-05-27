@@ -13,7 +13,7 @@ authors = [
     {name = "CCC", email = "ccc@superinstance.dev"},
 ]
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
@@ -28,6 +28,11 @@ dependencies = [
 dev = [
     "pytest>=7.0",
     "pytest-cov>=4.0",
+    "ruff>=0.6.0",
+    "mypy>=1.10.0",
+    "bandit[toml]>=1.7.0",
+    "pip-audit>=2.7.0",
+    "pre-commit>=3.0",
 ]
 
 [project.scripts]
@@ -37,8 +42,44 @@ ccc-os = "ccc_os.__main__:main"
 include = ["ccc_os*"]
 
 [tool.pytest.ini_options]
-testpaths = ["ccc_os/tests"]
-import_mode = "importlib"
+testpaths = ["tests", "ccc_os/tests"]
+addopts = "--import-mode=importlib"
+
+[tool.coverage.run]
+source = ["ccc_os"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
+
+[tool.ruff]
+line-length = 100
+extend-exclude = [
+    "monitors/",
+    "health/",
+    "orchestrator.py",
+    "rubric.py",
+    "deck.py",
+    "landing_page_gen.py",
+    "fleet_bridge.py",
+    "__main__.py",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+ignore = ["E402"]
+
+[tool.mypy]
+python_version = "3.10"
+ignore_missing_imports = true
+warn_unused_ignores = true
+warn_redundant_casts = true
 
 [tool.setuptools.package-data]
 ccc_os = ["py.typed"]

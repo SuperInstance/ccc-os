@@ -3,17 +3,17 @@
     {
       "name": "MUD",
       "status": "DOWN",
-      "error": "HTTP Error 501: Not Implemented"
+      "error": "<urlopen error [Errno 111] Connection refused>"
     },
     {
       "name": "Arena",
       "status": "DOWN",
-      "error": "HTTP Error 501: Unsupported method ('HEAD')"
+      "error": "<urlopen error [Errno 111] Connection refused>"
     },
     {
       "name": "Grammar",
       "status": "DOWN",
-      "error": "HTTP Error 501: Unsupported method ('HEAD')"
+      "error": "<urlopen error [Errno 111] Connection refused>"
     },
     {
       "name": "PLATO Gate",
@@ -23,22 +23,22 @@
     {
       "name": "PLATO Shell",
       "status": "DOWN",
-      "error": "HTTP Error 501: Unsupported method ('HEAD')"
+      "error": "<urlopen error [Errno 111] Connection refused>"
     },
     {
       "name": "Rate-Attention",
       "status": "DOWN",
-      "error": "HTTP Error 501: Not Implemented"
+      "error": "<urlopen error [Errno 111] Connection refused>"
     },
     {
       "name": "Skill Forge",
       "status": "DOWN",
-      "error": "HTTP Error 501: Not Implemented"
+      "error": "<urlopen error [Errno 111] Connection refused>"
     },
     {
       "name": "Matrix Bridge",
       "status": "DOWN",
-      "error": "HTTP Error 501: Unsupported method ('HEAD')"
+      "error": "<urlopen error [Errno 111] Connection refused>"
     }
   ],
   "up": 0,

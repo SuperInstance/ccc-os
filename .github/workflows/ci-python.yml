@@ -2,7 +2,7 @@ name: Python CI
 
 on:
   push:
-    branches: [ '*' ]
+    branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
 
@@ -18,17 +18,27 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
+    - name: Cache pip dependencies
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-${{ matrix.python-version }}-
+          ${{ runner.os }}-pip-
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install flake8 pytest
+        pip install ruff mypy pytest pytest-cov
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         if [ -f setup.py ]; then pip install -e .; fi
-        if [ -f pyproject.toml ]; then pip install -e .; fi
-    - name: Lint with flake8
+        if [ -f pyproject.toml ]; then pip install -e .[dev]; fi
+    - name: Lint with ruff
       run: |
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        ruff check .
+    - name: Type check with mypy
+      run: |
+        mypy ccc_os/ || true
     - name: Test with pytest
       run: |
-        python -m pytest --import-mode=importlib -x -v || true
+        python -m pytest tests/ ccc_os/tests/ -x -v --cov=ccc_os --cov-report=term-missing --cov-report=xml --cov-fail-under=75

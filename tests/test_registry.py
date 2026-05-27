@@ -1,20 +1,5 @@
 import json
-import sys
-from pathlib import Path
-
-# Import directly from the __main__.py file
-_main_path = str(Path(__file__).resolve().parent.parent / "__main__.py")
-
-# Use importlib to load the module
-import importlib.util
-spec = importlib.util.spec_from_file_location("ccc_os_main", _main_path)
-ccc_os_main = importlib.util.module_from_spec(spec)
-sys.modules["ccc_os_main"] = ccc_os_main
-spec.loader.exec_module(ccc_os_main)
-
-MonitorRegistry = ccc_os_main.MonitorRegistry
-register_monitor = ccc_os_main.register_monitor
-run_all_monitors = ccc_os_main.run_all_monitors
+from ccc_os.registry import MonitorRegistry, register_monitor, run_all_monitors
 
 
 class TestMonitorRegistry:

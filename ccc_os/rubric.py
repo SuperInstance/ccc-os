@@ -192,15 +192,17 @@ class Rubric:
         best_score = -1.0
         all_matches: list[tuple[Rule, float]] = []
 
-        for rule in self.rules:
+        # Evaluate all real rules first, skip the catch-all for match counting
+        for rule in self.rules[:-1]:  # exclude default/catch-all
             if rule.matches(inp):
                 all_matches.append((rule, rule.weight))
                 if rule.weight > best_score:
                     best_score = rule.weight
                     best_rule = rule
 
+        # Use catch-all only if nothing else matched
         if best_rule is None:
-            best_rule = self.rules[-1]  # default
+            best_rule = self.rules[-1]
             best_score = 0.0
 
         # Determine confidence based on match count and score
