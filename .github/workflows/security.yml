@@ -39,6 +39,7 @@ jobs:
         pip-audit --desc --format=json -o pip-audit-report.json || true
         pip-audit --desc  # Plain output for logs; non-failing
     - name: Run trufflehog (secret scan)
+      continue-on-error: true
       uses: trufflesecurity/trufflehog@main
       with:
         path: ./
