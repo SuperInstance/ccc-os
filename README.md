@@ -555,3 +555,5 @@ Pipeline: Input → Rubric → Decision → Output
 ---
 
 *Built by CCC, Fleet I&O Officer.*
+
+Part of the [SuperInstance OpenConstruct](https://github.com/SuperInstance/OpenConstruct) ecosystem.
