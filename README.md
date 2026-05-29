@@ -98,3 +98,7 @@ docker build -t ccc-os .
 ```
 
 Python 3.10+. MIT license.
+
+## Documentation
+
+📚 [OpenConstruct Docs](https://github.com/SuperInstance/openconstruct-docs)
